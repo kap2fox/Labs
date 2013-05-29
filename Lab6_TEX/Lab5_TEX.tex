@@ -1,0 +1,206 @@
+% указываем класс документа
+\documentclass[12pt,a4paper,openany]{extarticle}
+
+% подключаем собственный стилевой файл 
+\usepackage{mystyle}
+
+% указываем язык (для автоматической вставки слов, типа "Глава", "Содержание", "Литература", "рис." и пр.
+\selectlanguage{russian}
+
+\begin{document}
+\part*{Лабораторная работа №5\\
+ Математическое описание модели на примере робота Segway}
+\section{Методические рекомендации}
+До начала работы студент должен выполнить предыдущие работы этого цикла. Необходимо знание основ теоретической механики и математических основ теории систем.
+\section{Теоретические сведения}
+Мы будем использовать следующие обобщенные координаты:\\
+$\theta$: среднее арифметическое значение углов поворота левого и правого колеса,\\
+$\psi$: угол наклона робота оносительно вертикали,\\
+$\phi$: угол поворота робота относительно начального положения.\\
+
+\begin{equation}
+(\theta ,\ \phi)=\left(\cfrac12(\theta_r+\theta_l),\ \frac{R}{W}(\theta_r-\theta_l)\right)
+\end{equation}
+
+\begin{equation}
+(x_m,\ y_m,\ z_m)=(\int\dot{x}_mdt,\ \int\dot{y}_mdt,\ R),\ 
+(\dot{x}_mdt,\ \dot{y}_mdt)=(R\dot{\theta}\cos\phi ,\ R\dot{\theta}\sin\phi)
+\end{equation}
+
+\begin{equation}
+(x_l,\ y_l,\ z_l)=\left(x_m-\frac{W}{2}\sin\phi ,\ y_m+\frac{W}{2}\cos\phi ,\ z_m\right)
+\end{equation}
+
+\begin{equation}
+(x_r,\ y_r,\ z_r)=\left(x_m+\frac{W}{2}\sin\phi ,\ y_m-\frac{W}{2}\cos\phi ,\ z_m\right)
+\end{equation}
+
+\begin{equation}
+(x_b,\ y_b,\ z_b)=\left(x_m+L\sin\psi\cos\phi ,\ y_m+L\sin\psi\sin\phi ,\ z_m+L\cos\psi \right)
+\end{equation}
+
+\begin{equation}
+(x_b,\ y_b,\ z_b)=\left(\int R\dot{\theta}\cos\phi dt+L\sin\psi\cos\phi ,\ 
+\int R\dot{\theta}\sin\phi dt+L\sin\psi\sin\phi ,\ R+L\cos\psi \right)
+\end{equation}
+
+Теперь выпишем уравнения поступательной кинетической энергии~$T_k$, вращательной кинетической энергии~$T_p$ и потенциальной энергии~$U$:
+
+\begin{equation}
+T_k=\cfrac12 M\left(\dot{x}_b^2+\dot{y}_b^2+\dot{z}_b^2\right)\\
+\end{equation}
+
+\begin{equation}
+T_p=\cfrac12J_\psi\dot{\psi}^2+\cfrac12J_\phi\dot{\phi}^2
+\end{equation}
+
+\begin{equation}
+U=Mgz_b
+\end{equation}
+
+Если подставить значения соответствующих координат, то мы получим следущее выражение для кинетической энергии: $\cfrac12 M\left(\left(\left(\int R\dot{\theta}\cos\phi dt+L\sin\psi\cos\phi\right)'\right)^2
++\left(\left(\int R\dot{\theta}\sin\phi dt+L\sin\psi\sin\phi\right)'\right)^2
++((R+L\cos\psi)')^2 \right)$. При раскрытии скобок мы получим: $\cfrac12 M\left(2RL\dot\theta \dot\psi\cos\psi+R^2 \dot{\theta}^2+L^2\dot\psi^2+L^2\dot{\phi}^2 \sin^2\psi\right)$\\
+Лагранжиан $L$ будет выглядеть следующим образом:
+
+\begin{equation}
+L=T_k+T_p-U
+\end{equation}
+
+\begin{equation}
+L=\cfrac12 M\left(2RL\dot\theta \dot\psi\cos\psi+R^2 \dot{\theta}^2+L^2\dot\psi^2+L^2\dot{\phi}^2 \sin^2\psi\right)+ \cfrac12J_\psi\dot{\psi}^2+\cfrac12J_\phi\dot{\phi}^2-Mg(R+L\cos\psi)
+\end{equation}
+
+А уравнение Лагранжа запишем следующим образом:
+
+\begin{equation}
+\left\{  
+	\begin{array}{rcl} 
+	\cfrac{d}{dt}\cfrac{\partial L}{\partial\dot{\theta}}-\cfrac{\partial L}{\partial 			\theta}&=F_\theta\\
+	\cfrac{d}{dt}\cfrac{\partial L}{\partial\dot{\psi}}-\cfrac{\partial L}{\partial \psi}&=F_\psi\\
+	\cfrac{d}{dt}\cfrac{\partial L}{\partial\dot{\phi}}-\cfrac{\partial L}{\partial \phi}&=F_\phi\\
+	\end{array}   
+	\right.
+\end{equation}
+
+Выполнив указанные дейсвия мы получим:
+
+\begin{equation}
+\left\{  
+	\begin{array}{rcl}
+	F_\theta&=&MR^2\ddot\theta+MRL\ddot\psi\cos\psi-MRL\dot\psi^2\sin\psi\\
+	F_\psi&=&MRL\ddot\theta\cos\psi+(ML^2+J_\psi)\ddot\psi-MgL\sin\psi-ML^2\dot\phi^2\sin\psi\cos\psi\\
+	F_\phi&=&(ML^2\sin^2\psi+J_\phi)\ddot\phi+2ML^2\dot\psi\dot\phi\sin\psi\cos\psi\\	
+	\end{array}   
+	\right.
+\end{equation}
+
+Далее составим уравнения для двигателей нашего Segway:
+\begin{equation}
+(F_\theta,\ F_\psi,\ F_\phi)=\left(F_l+F_r,\ F_\psi,\ \frac{W}{2R}(F_r-F_l)\right)
+\end{equation}
+
+\begin{equation}
+\left\{  
+	\begin{array}{rcl}
+	F_l&=&k_mI_l\\
+	F_r&=&k_mI_r\\
+	F_\psi&=&-k_mI_l-k_mI_r\\	
+	\end{array}   
+	\right.
+\end{equation}
+
+\begin{equation}
+L\dot{I}_{l,r}=U_{l,r}+k_\omega(\dot\psi-\dot\theta_{l,r})-R_\textit{я}I_{l,r}
+\end{equation}
+Так как индуктивность обмотки крайне мала, положим $L=0$:
+\begin{equation}
+I_{l,r}=\frac{U_{l,r}+k_\omega(\dot\psi-\dot\theta_{l,r})}{R_\textit{я}}
+\end{equation}
+Стоит отметить, что $\phi=\cfrac{W}{R}(\theta_r-\theta_l)$, тогда:
+\begin{equation}
+\left\{  
+	\begin{array}{rcl}
+	F_\theta&=&\cfrac{k_m}{R_\textit{я}}(U_l+U_r)+2\cfrac{k_mk_\omega}{R_\textit{я}}(\dot\psi-\dot\theta)\\
+	F_\psi&=&-\cfrac{k_m}{R_\textit{я}}(U_l+U_r)-2\cfrac{k_mk_\omega}{R_\textit{я}}(\dot\psi-\dot\theta)\\
+	F_\phi&=&\cfrac{W}{2R}\cfrac{k_m}{R_\textit{я}}(U_r-U_l)-\cfrac{W^2}{2R^2}\cfrac{k_mk_\omega}{R_\textit{я}}\dot\phi\\	
+	\end{array}   
+	\right.
+\end{equation}
+Запишем окончательную систему уравнений, описывающих динамическую модель робота:
+\begin{equation}
+\left\{
+\begin{array}{rcl}
+	\cfrac{k_m}{R_\textit{я}}(U_l+U_r)&=&MR^2\ddot\theta+MRL\ddot\psi\cos\psi-MRL\dot\psi^2\sin\psi+2\cfrac{k_mk_\omega}{R_\textit{я}}(\dot\psi-\dot\theta)\\
+	-\cfrac{k_m}{R_\textit{я}}(U_l+U_r)&=&MRL\ddot\theta\cos\psi+(ML^2+J_\psi)\ddot\psi-MgL\sin\psi-ML^2\dot\phi^2\sin\psi\cos\psi-2\cfrac{k_mk_\omega}{R_\textit{я}}(\dot\psi-\dot\theta)\\
+	\cfrac{W}{2R}\cfrac{k_m}{R_\textit{я}}(U_r-U_l)&=& (ML^2\sin^2\psi+J_\phi)\ddot\phi+2ML^2\dot\psi\dot\phi\sin\psi\cos\psi-\cfrac{W^2}{2R^2}\cfrac{k_mk_\omega}{R_\textit{я}}\dot\phi\\	
+	\end{array}   
+	\right.
+\end{equation}
+
+Линеарезуем нашу модель. Для этого воспользуемся первым замечательным пределом $ \sin\psi=\psi $, а $ \cos\psi=1 $ при малых углах отклонения, до 15 градусов.
+
+\begin{equation}
+\left\{
+\begin{array}{rcl}
+	\cfrac{k_m}{R_\textit{я}}(U_l+U_r)&=&MR^2\ddot\theta+MRL\ddot\psi-MRL\dot\psi^2\psi+2\cfrac{k_mk_\omega}{R_\textit{я}}(\dot\psi-\dot\theta)\\
+	-\cfrac{k_m}{R_\textit{я}}(U_l+U_r)&=&MRL\ddot\theta+(ML^2+J_\psi)\ddot\psi-MgL\psi-ML^2\dot\phi^2\psi-2\cfrac{k_mk_\omega}{R_\textit{я}}(\dot\psi-\dot\theta)\\
+	\cfrac{W}{2R}\cfrac{k_m}{R_\textit{я}}(U_r-U_l)&=& (ML^2\psi^2+J_\phi)\ddot\phi+2ML^2\dot\psi\dot\phi\psi-\cfrac{W^2}{2R^2}\cfrac{k_mk_\omega}{R_\textit{я}}\dot\phi\\	
+	\end{array}   
+	\right.
+\end{equation}
+
+Теперь нам необходимо избавиться от оставшихся нелинейностей, квадротов переменных и их произведений между собой. Мы пренебрегаем этими значениями только при условии, что угол отклонения от начального положения будет крайне мал.
+
+\begin{equation}
+\left\{
+\begin{array}{rcl}
+	\cfrac{k_m}{R_\textit{я}}(U_l+U_r)&=&MR^2\ddot\theta+MRL\ddot\psi+2\cfrac{k_mk_\omega}{R_\textit{я}}(\dot\psi-\dot\theta)\\
+	-\cfrac{k_m}{R_\textit{я}}(U_l+U_r)&=&MRL\ddot\theta+(ML^2+J_\psi)\ddot\psi-2\cfrac{k_mk_\omega}{R_\textit{я}}(\dot\psi-\dot\theta)-MgL\psi\\
+	\cfrac{W}{2R}\cfrac{k_m}{R_\textit{я}}(U_r-U_l)&=& J_\phi\ddot\phi-\cfrac{W^2}{2R^2}\cfrac{k_mk_\omega}{R_\textit{я}}\dot\phi\\	
+	\end{array}   
+	\right.
+\end{equation}
+
+Теперь мы получили систему уравнений, в которой с одной стороны мы имеем управляющее воздействие, а с другой линейные дифференциальные уравнения состояния объекта. В третьем уравнении содержится только одна переменная $\phi$ и ее производные. Поэтому мы будем рассматривать это уравнение отдельно от остальных. Введем вектора состояния $x^T=[\theta, \psi]$ и управления $u^T=[U_l, U_r]$, запишем первые два уравнения в матричной форме:
+
+\begin{equation}
+E\ddot{x}+F\dot{x}+Gx=Hu
+\end{equation}
+
+\begin{equation}
+E=
+\begin{bmatrix}
+	MR^2&MRL\\
+	MRL&ML^2+J_\psi\\
+\end{bmatrix},
+F=
+\begin{bmatrix}
+	2\cfrac{k_mk_\omega}{R_\textit{я}}&-2\cfrac{k_mk_\omega}{R_\textit{я}}\\
+	-2\cfrac{k_mk_\omega}{R_\textit{я}}&2\cfrac{k_mk_\omega}{R_\textit{я}}\\
+\end{bmatrix},
+G=
+\begin{bmatrix}
+	0&0\\
+	0&MgL\\
+\end{bmatrix},
+H=
+\begin{bmatrix}
+	\cfrac{k_m}{R_\textit{я}}&\cfrac{k_m}{R_\textit{я}}\\
+	-\cfrac{k_m}{R_\textit{я}}&-\cfrac{k_m}{R_\textit{я}}\\
+\end{bmatrix}.
+\end{equation}
+
+Дальше запишем наше уравнение в следующей форме:
+
+\begin{equation}
+\ddot{x}=E^{-1}F\dot{x}+E^{-1}Gx+E^{-1}Hu
+\end{equation}
+
+Для того чтобы перейти к форме вход--состояние--выход, добавим к имеющемуся уравнению еще одно, $\dot\psi=\dot\psi$. Учитывая, что $E^{-1}G=\cfrac{1}{J_\psi}\begin{bmatrix} 0&M^2RL^2g\\0&M^2R^2Lg\\ \end{bmatrix}$, заменим вектор состояния на $x^T=[\psi, \dot\theta, \dot\psi]$:
+
+\begin{equation}
+\dot{x}=\begin{array}{|lcr|} 0&0&1\\ E^{-1}G[1,2]&&\\ E^{-1}G[2,2]&&E^{-1}F \end{array}x+\begin{array}{|lr|} 0&0\\ &E^{-1}H\end{array}u
+\end{equation}
+
+\end{document}
